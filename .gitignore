@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.env
+data/
+models/*.pkl
+*.h5
+mlruns/
+.mypy_cache/
+output/
+.ipynb_checkpoints/
+*.DS_Store
+Thumbs.db
