@@ -1,4 +1,3 @@
-# Uses geopy.distance.geodesic for distance calculations
 import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator
