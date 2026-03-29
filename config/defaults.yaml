@@ -1,0 +1,25 @@
+classification:
+  thresholds:
+    optimal: 0.70
+    good: 0.50
+    marginal: 0.30
+
+feature_weights:
+  accessibility_score: 0.25
+  market_potential_index: 0.20
+  infrastructure_readiness: 0.20
+  log_freight_volume: 0.15
+  labor_per_warehouse_sqm: 0.05
+  distance_to_nearest_hub_km: 0.10
+  land_cost_index: 0.05
+
+model:
+  algorithm: XGBoost
+  n_estimators: 200
+  max_depth: 6
+  cv_folds: 5
+  random_state: 42
+
+output:
+  model_dir: models
+  results_dir: output
