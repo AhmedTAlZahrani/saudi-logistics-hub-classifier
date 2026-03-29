@@ -1,7 +1,18 @@
+import logging
+from pathlib import Path
+
 import pandas as pd
 import numpy as np
 import joblib
-from pathlib import Path
+
+_log_dir = Path("logs")
+_log_dir.mkdir(parents=True, exist_ok=True)
+logger = logging.getLogger("hub_classifier")
+logger.setLevel(logging.INFO)
+if not logger.handlers:
+    _fh = logging.FileHandler(_log_dir / "classify.log")
+    _fh.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s"))
+    logger.addHandler(_fh)
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 from xgboost import XGBClassifier
@@ -63,7 +74,7 @@ class ClassificationBenchmark:
         self.best_model = None
         self.best_model_name = None
 
-    def train(self, X, y, model_name="XGBoost"):
+    def train(self, X: np.ndarray, y: np.ndarray, model_name: str = "XGBoost"):
         """Train a single model.
 
         Args:
@@ -76,6 +87,7 @@ class ClassificationBenchmark:
         """
         model = MODELS[model_name]
         model.fit(X, y)
+        logger.info("Trained %s on %d samples", model_name, X.shape[0])
         print(f"Trained {model_name} on {X.shape[0]} samples")
         return model
 
@@ -96,7 +108,7 @@ class ClassificationBenchmark:
             for metric in scoring
         }
 
-    def compare_models(self, X, y, n_folds=5):
+    def compare_models(self, X: np.ndarray, y: np.ndarray, n_folds: int = 5) -> pd.DataFrame:
         """Compare all ML models using cross-validation.
 
         Args:
@@ -124,11 +136,12 @@ class ClassificationBenchmark:
 
         # Train best model on full data
         self.best_model = self.train(X, y, self.best_model_name)
+        logger.info("Best model: %s (F1=%.4f)", self.best_model_name, best_f1)
         print(f"\nBest model: {self.best_model_name} (F1={best_f1:.4f})")
 
         return pd.DataFrame(rows).sort_values("f1_weighted", ascending=False)
 
-    def topsis_rank(self, X_raw):
+    def topsis_rank(self, X_raw: pd.DataFrame) -> pd.Series:
         """Rank locations using TOPSIS multi-criteria decision analysis.
 
         Args:

@@ -32,7 +32,7 @@ class HubFeatureBuilder(BaseEstimator):
         self._categorical_cols = None
         self._label_encoder = None
 
-    def fit(self, X, y=None):
+    def fit(self, X: pd.DataFrame, y=None) -> "HubFeatureBuilder":
         """Fit the preprocessing pipeline.
 
         Args:
@@ -59,7 +59,7 @@ class HubFeatureBuilder(BaseEstimator):
               f"{len(self._categorical_cols)} categorical features")
         return self
 
-    def process(self, X):
+    def process(self, X: pd.DataFrame) -> pd.DataFrame:
         """Transform features using the fitted pipeline.
 
         Args:
@@ -80,7 +80,7 @@ class HubFeatureBuilder(BaseEstimator):
         """Return the feature names after transformation."""
         return self._preprocessor.get_feature_names_out().tolist()
 
-    def encode_target(self, y):
+    def encode_target(self, y: pd.Series) -> tuple:
         """Encode suitability labels to numeric values.
 
         Args:
